@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ClasseProduct
+class Product
 {
     public function __construct(
         private int $id = 0,
@@ -12,7 +12,8 @@ class ClasseProduct
         private string $description = "",
         private int $quantity = 0,
         private DateTime $createdAt = new DateTime(),
-        private DateTime $updatedAt = new DateTime()
+        private DateTime $updatedAt = new DateTime(),
+        private int $category_id = 0, // nouvel attribut
     ) {}
 
     //SETTERS 
@@ -49,6 +50,10 @@ class ClasseProduct
     public function setUpdatedAt(DateTime $date): void
     {
         $this->updatedAt = $date;
+    }
+    public function setCategoryId(int $category_id): void
+    {
+        $this->category_id = $category_id;
     }
 
     //GETTERS
@@ -91,10 +96,14 @@ class ClasseProduct
     {
         return $this->updatedAt;
     }
+    public function getCategoryId(): int
+    {
+        return $this->category_id;
+    }
 }
 // on instancie la classe et on teste 
 
-$produit1 = new ClasseProduct(1, 'T-shirt', ['img1.jpg'], 25, 'Beau t-shirt', 10);
+$produit1 = new Product(1, 'T-shirt', ['img1.jpg'], 25, 'Beau t-shirt', 10);
 
 $produit1->setName('Taylor Swift');
 $produit1->setPrice(30);
