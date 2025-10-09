@@ -55,6 +55,10 @@ class Product
     {
         $this->category_id = $category_id;
     }
+    public function setPhotosFromJson(string $json): void
+    {
+        $this->photos = json_decode($json, true) ?? []; //Pour récupérer depuis la bse de données JSON → PHP (lecture)
+    }
 
     //GETTERS
     public function getId(): int
@@ -99,6 +103,10 @@ class Product
     public function getCategoryId(): int
     {
         return $this->category_id;
+    }
+    public function getPhotosJson(): string
+    {
+        return json_encode($this->photos); // pour stocker en BDD PHP → JSON (stockage)
     }
 }
 // on instancie la classe et on teste 
