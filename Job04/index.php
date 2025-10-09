@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 // Inclure la classe Product
 require_once __DIR__ . '/../Job01/Job01.php';
+require_once __DIR__ . '/../Job02/Job02.php';
 
 // Connexion à la BDD
 $conn = new mysqli("localhost", "root", "", "draft_shop");
@@ -18,7 +19,7 @@ $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
 $productData = $result->fetch_assoc();
-var_dump($productData);
+// var_dump($productData); // juste pour voir le contenu du tableau 
 
 // Hydrater l'objet Product avec le resultat de $productData issu de la BBD
 
@@ -35,4 +36,5 @@ $product = new Product(
 );
 
 // Tester l'objet
+echo " <br><br><br> Job03 / Job04 <br><br><br>";
 var_dump($product);

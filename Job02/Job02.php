@@ -69,6 +69,7 @@ class Category
 
 $category = new Category(11, "Électronique", "Appareils et gadgets high-tech");
 $product = new Product(1, "iPhone 15", ["iphone15.jpg"], 1200, "Smartphone Apple", 10, new DateTime(), new DateTime(), $category->getId());
-
+echo "<br><br><br>Job02 <br><br><br>";
 var_dump($category);
+echo "<br>";
 var_dump($product);

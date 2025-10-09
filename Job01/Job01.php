@@ -104,6 +104,20 @@ class Product
     {
         return $this->category_id;
     }
+    public function getCategory(): object
+    {
+        $conn = new mysqli("localhost", "root", "", "draft_shop");
+        if ($conn->connect_error) {
+            die("Erreur de connexion : " . $conn->connect_error);
+        }
+        $stmt = $conn->prepare("SELECT * FROM product WHERE id = ?");
+        $id = $this->category_id;
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $getCategoryById = $result->fetch_assoc();
+        return new Category($this->category_id, $getCategoryById['name'], $getCategoryById['description'], new DateTime($getCategoryById['createdAt']), new DateTime($getCategoryById['createdAt']));
+    }
     public function getPhotosJson(): string
     {
         return json_encode($this->photos); // pour stocker en BDD PHP → JSON (stockage)
@@ -116,6 +130,7 @@ $produit1 = new Product(1, 'T-shirt', ['img1.jpg'], 25, 'Beau t-shirt', 10);
 $produit1->setName('Taylor Swift');
 $produit1->setPrice(30);
 
+echo "Job01: <br><br><br>";
 echo "Nom : " . $produit1->getName() . "<br>";
 echo "id : " . $produit1->getId() . "<br>";
 echo "Prix : " . $produit1->getPrice() . "<br>";
