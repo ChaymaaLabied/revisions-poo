@@ -39,6 +39,38 @@ class Category
     {
         return $this->updatedAt;
     }
+    public function getProducts(): array
+    {
+        $conn = new mysqli("localhost", "root", "", "draft_shop");
+        if ($conn->connect_error) {
+            die("Erreur de connexion : " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("SELECT * FROM product WHERE category_id = ?");
+        $category_id = $this->id;
+        $stmt->bind_param("i", $category_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $products = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $products[] = new Product(
+                (int)$row['id'],
+                $row['name'],
+                json_decode($row['photos'], true),
+                (int)$row['price'],
+                $row['description'],
+                (int)$row['quantity'],
+                new DateTime($row['createdAt']),
+                new DateTime($row['updatedAt']),
+                (int)$row['category_id']
+            );
+        }
+
+        return $products;
+    }
+
 
     // Setters
     public function setId(int $id): void

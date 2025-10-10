@@ -104,19 +104,22 @@ class Product
     {
         return $this->category_id;
     }
-    public function getCategory(): object
+    public function getCategory(): ?Category
     {
         $conn = new mysqli("localhost", "root", "", "draft_shop");
         if ($conn->connect_error) {
             die("Erreur de connexion : " . $conn->connect_error);
         }
-        $stmt = $conn->prepare("SELECT * FROM product WHERE id = ?");
+        $stmt = $conn->prepare("SELECT * FROM category WHERE id = ?");
         $id = $this->category_id;
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
         $getCategoryById = $result->fetch_assoc();
-        return new Category($this->category_id, $getCategoryById['name'], $getCategoryById['description'], new DateTime($getCategoryById['createdAt']), new DateTime($getCategoryById['createdAt']));
+        if (!$getCategoryById) {
+            return null;
+        }
+        return new Category($this->category_id, $getCategoryById['name'], $getCategoryById['description'], new DateTime($getCategoryById['createdAt']), new DateTime($getCategoryById['updatedAt']));
     }
     public function getPhotosJson(): string
     {
