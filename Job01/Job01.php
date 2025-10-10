@@ -125,6 +125,36 @@ class Product
     {
         return json_encode($this->photos); // pour stocker en BDD PHP → JSON (stockage)
     }
+    public function findOneById(int $id)
+    {
+        $conn = new mysqli("localhost", "root", "", "draft_shop");
+        if ($conn->connect_error) {
+            die("Erreur de connexion : " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("SELECT * FROM product WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $productData = $result->fetch_assoc();
+
+        if (!$productData) {
+            return false;
+        }
+
+        // On retourne une nouvelle instance de Product hydratée avec les données
+        return new Product(
+            $productData['id'],
+            $productData['name'],
+            json_decode($productData['photos'], true) ?? [],
+            (int)$productData['price'],
+            $productData['description'],
+            (int)$productData['quantity'],
+            new DateTime($productData['createdAt']),
+            new DateTime($productData['updatedAt']),
+            (int)$productData['category_id']
+        );
+    }
 }
 // on instancie la classe et on teste 
 
