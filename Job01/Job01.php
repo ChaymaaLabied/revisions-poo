@@ -155,6 +155,72 @@ class Product
             (int)$productData['category_id']
         );
     }
+    public function findAll(): array
+    {
+        $conn = new mysqli("localhost", "root", "", "draft_shop");
+        if ($conn->connect_error) {
+            die("Erreur de connexion : " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("SELECT * FROM product");
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $products = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $products[] = new Product(
+                $row['id'],
+                $row['name'],
+                json_decode($row['photos'], true) ?? [],
+                $row['price'],
+                $row['description'],
+                $row['quantity'],
+                new DateTime($row['createdAt']),
+                new DateTime($row['updatedAt']),
+                $row['category_id']
+            );
+        }
+
+        return $products;
+    }
+    public function create(): mixed
+    {
+        $conn = new mysqli("localhost", "root", "", "draft_shop");
+        if ($conn->connect_error) {
+            die("Erreur de connexion : " . $conn->connect_error);
+        }
+
+        $photosJson = json_encode($this->photos); // convertir le tableau de photos en JSON pour la BDD
+        $stmt = $conn->prepare("
+        INSERT INTO product 
+        (name, photos, price, description, quantity, createdAt, updatedAt, category_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+
+        $createdAtStr = $this->createdAt->format('Y-m-d H:i:s');
+        $updatedAtStr = $this->updatedAt->format('Y-m-d H:i:s');
+
+        $stmt->bind_param(
+            "ssissssi",
+            $this->name,
+            $photosJson,
+            $this->price,
+            $this->description,
+            $this->quantity,
+            $createdAtStr,
+            $updatedAtStr,
+            $this->category_id
+        );
+
+        if ($stmt->execute()) {
+            // récupérer l'id généré par la BDD
+            $this->id = $conn->insert_id;
+            return $this; // retourner l'objet Product courant avec l'id rempli
+        }
+
+        return false;
+    }
 }
 // on instancie la classe et on teste 
 
