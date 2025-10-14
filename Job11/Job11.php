@@ -11,12 +11,15 @@ class Clothing extends Product
         int $price = 0,
         string $description = "",
         int $quantity = 0,
+        DateTime $createdAt = new DateTime(),
+        DateTime $updatedAt = new DateTime(),
+        int $category_id = 0,
         private string $size = "",
         private string $color = "",
         private string $type = "",
         private int $material_fee = 0
     ) {
-        parent::__construct($id, $name, $photos, $price, $description, $quantity);
+        parent::__construct($id, $name, $photos, $price, $description, $quantity, $createdAt, $updatedAt, $category_id);
     }
 }
 
