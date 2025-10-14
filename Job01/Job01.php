@@ -221,6 +221,52 @@ class Product
 
         return false;
     }
+    public function update(): bool
+    {
+        $conn = new mysqli("localhost", "root", "", "draft_shop");
+        if ($conn->connect_error) {
+            die("Erreur de connexion : " . $conn->connect_error);
+        }
+
+        // Vérifie qu'on a bien un id
+        if ($this->id <= 0) {
+            return false;
+        }
+
+        $stmt = $conn->prepare("
+        UPDATE product
+        SET name = ?, 
+            photos = ?, 
+            price = ?, 
+            description = ?, 
+            quantity = ?, 
+            updatedAt = ?, 
+            category_id = ?
+        WHERE id = ?
+    ");
+
+        $photosJson = json_encode($this->photos);
+        $updatedAtStr = (new DateTime())->format('Y-m-d H:i:s');
+        // y'a pas creatAt car logiquement c inchangeable 
+        $stmt->bind_param(
+            "ssisssii",
+            $this->name,
+            $photosJson,
+            $this->price,
+            $this->description,
+            $this->quantity,
+            $updatedAtStr,
+            $this->category_id,
+            $this->id
+        );
+
+        $success = $stmt->execute();
+
+        $stmt->close();
+        $conn->close();
+
+        return $success;
+    }
 }
 // on instancie la classe et on teste 
 
